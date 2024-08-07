@@ -55,6 +55,15 @@ This guide will walk you through the steps to launch an EC2 instance and connect
 
 - **Permission Issues with `.pem` File:** Ensure the `.pem` file has the correct permissions. Run `chmod 400 your-key-file.pem` to set the correct permissions.
 - **Security Group Configuration:** Ensure your security group allows inbound SSH traffic on port 22 from your IP address.
-- **Correct Username:** For Ubuntu instances, the default username is `ubuntu`. For other AMIs, it might be `ec2-user` or something else.
+- **Correct Username:** For Ubuntu instances, the default username is `ubuntu`.
+- The default username can vary depending on the AMI you are using. Here are some common default usernames for different AMIs:
+      Amazon Linux 2 or Amazon Linux AMI: ec2-user
+      RHEL (Red Hat Enterprise Linux): ec2-user or root
+      CentOS: centos or root
+      Debian: admin or root
+      SUSE Linux: ec2-user or root
+      Ubuntu: ubuntu
+      Fedora: ec2-user or fedora
+When connecting via SSH, if you are unsure of the default username, check the documentation for the specific AMI you are using or try a combination of common usernames based on the operating system.
 
 Following these steps, you should be able to launch and connect to your EC2 instance using MobaXterm. 
