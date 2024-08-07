@@ -11,12 +11,12 @@ This repository contains Helm charts for deploying the Wanderlast sample backend
 
 ## Setting Up EC2 Instance
 
-1. **Launch an EC2 instance** (t2.large) on your preferred cloud provider and connect to it using MobaXterm.
+1. **Launch an EC2 instance** (t2.large) on your preferred cloud provider and connect to it using MobaXterm. I used Ubuntu.
 
 2. **Connect to your EC2 instance**:
    - Open MobaXterm.
    - Start a new session (SSH).
-   - Enter your EC2 instance's public IP and use your private key for authentication.
+   - Enter your EC2 instance's public IP and use your private key for authentication. 
 
 3. **Install Minikube** on the EC2 instance:
    ```sh
