@@ -1,88 +1,97 @@
-## PROD Deployment via custom Helm Charts
-1. Install minikube cluster on a t2.large instance and navigate to the directoy having helm configs
-```bash
-cd helm
-```
-2. Before deployment check the configs using dry-run 
-```bash
-helm upgrade --install wanderlast . --dry-run --debug
-```
-3. Deploy the helm chart
-```bash
-helm upgrade --install wanderlast .
-```
-4. Check the deployment
-```bash
-helm ls
-```
-5. Check the deployment status
-```bash
-kubectl get all
-```
-6. Get the URL for the service running in minikube VM
-```bash
-minikube service wanderlast-helm-frontend --url
-```
-7. Test the app locally on minikube VM
-```bash
-curl <URL>
-```
-8. Now to test the application outside the cluster via port-forwarding
-```bash
-kubectl get svc
-kubectl port-forward svc/wanderlast-helm-frontend NodePort-port:5173 --address 0.0.0.0 &
-```
-9. Now to test on browser 
-```bash
-http://PublicIP:NodePort
-```
-10. Delete the deployment
-```bash
-helm uninstall wanderlast .
-```
-Service Port Verification
-To ensure your Grafana and Prometheus services are correctly configured, follow these steps to verify the service ports.
+# Wanderlast Application Deployment using Helm
 
-Check Grafana Service Ports
-Run the following command to check the configuration of the Grafana service:
+This repository contains Helm charts for deploying the Wanderlast sample backend application to a Kubernetes cluster. It also includes setup instructions for Minikube and observability tools like Prometheus and Grafana.
 
-sh
-kubectl get svc grafana-ext -o yaml
-In the output, look for the ports section. It should resemble:
+## Prerequisites
 
-yaml
-ports:
-- port: 80
-  targetPort: 3000
-  nodePort: 30895
-Check Prometheus Service Ports
-Run the following command to check the configuration of the Prometheus service:
+- [Minikube](https://minikube.sigs.k8s.io/docs/start/)
+- [Helm](https://helm.sh/docs/intro/install/)
+- An EC2 instance (t2.large recommended)
+- [MobaXterm](https://mobaxterm.mobatek.net/download-home-edition.html)
 
-sh
-kubectl get svc prometheus-server-ext-new -o yaml
-Similarly, check the ports section:
+## Setting Up EC2 Instance
 
-yaml
-ports:
-- port: 80
-  targetPort: 9090
-  nodePort: 31517
-Port-Forward Commands
-Based on the output from the above commands, adjust your port-forwarding commands accordingly.
+1. **Launch an EC2 instance** (t2.large) on your preferred cloud provider and connect to it using MobaXterm.
 
-For Grafana
-If the nodePort is 30895 and the targetPort is 3000, but you encounter port issues, adjust the local port in the port-forward command:
+2. **Connect to your EC2 instance**:
+   - Open MobaXterm.
+   - Start a new session (SSH).
+   - Enter your EC2 instance's public IP and use your private key for authentication.
 
-sh
+3. **Install Minikube** on the EC2 instance:
+   ```sh
+   curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+   sudo install minikube-linux-amd64 /usr/local/bin/minikube
+4. **Install Docker**
+   sudo apt-get update
+   sudo apt-get install -y docker.io
+   sudo usermod -aG docker $USER
+   newgrp docker
+5.**Start Minikube**
+   minikube start --driver=docker --memory=8192 --cpus=4
+# Deploying the Application
+### Clone the repository and navigate to the Helm configs directory:
+    git clone https://github.com/your-repo/wanderlast-helm-deployment.git
+    cd wanderlast-helm-deployment/helm
+### Check the configs using dry-run:
+    helm upgrade --install wanderlast . --dry-run --debug
+### Deploy the Helm chart:
+    helm upgrade --install wanderlast .
+### Check the deployment:
+    helm ls
+### Check the deployment status:
+    kubectl get all
+### Get the URL for the service running in Minikube VM:
+    minikube service wanderlast-helm-frontend --url
+### Test the app locally on Minikube VM:
+    curl <URL>
+### Test the application outside the cluster via port-forwarding:
+    kubectl get svc
+    kubectl port-forward svc/wanderlast-helm-frontend <NodePort>:5173 --address 0.0.0.0 &
+###  Test on browser:
+    php
+    http://<PublicIP>:<NodePort>
+### Delete the deployment:
+    helm uninstall wanderlast
+## Observability Setup and Monitoring
+### Prometheus
+#### Add Prometheus community maintained Helm chart:
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo update
+#### Test Prometheus using dry-run and validate the chart configs:
+    helm install prometheus prometheus-community/prometheus --dry-run --debug
+#### Deploy Prometheus after validation:
+    helm install prometheus prometheus-community/prometheus
+#### Expose Prometheus service to access Prometheus-server using the browser:
+    kubectl expose service prometheus-server --type=NodePort --target-port=9090 --name=prometheus-server-ext
+#### Test the service for Prometheus-server-ext:
+    kubectl get svc
+    kubectl port-forward svc/prometheus-server-ext <NodePort>:80 --address 0.0.0.0 &
+#### Navigate to browser:
+      http://<PublicIP>:<NodePort>
+### Grafana
+#### Add the Grafana community maintained Helm chart:
+    helm repo add grafana https://grafana.github.io/helm-charts
+    helm repo update
+#### Test Grafana using dry-run and validate the chart configs:
+      helm install grafana grafana/grafana --dry-run --debug
+#### Deploy Grafana after validation:
+      helm install grafana grafana/grafana
+#### Expose Grafana service to access Grafana using the browser:
+      kubectl expose service grafana --type=NodePort --target-port=3000 --name=grafana-ext
+#### Test the service for grafana-ext:
+      kubectl get svc
+      kubectl port-forward svc/grafana-ext <NodePort>:80 --address 0.0.0.0 &
+#### Navigate to browser:
+      http://<PublicIP>:<NodePort>
+#### Get the 'admin' user password:
+      kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+### Setup datasource in Grafana dashboard:
 
-kubectl port-forward svc/grafana-ext 8080:80 --address 0.0.0.0 &
-Access Grafana at http://localhost:8080.
-
-For Prometheus
-If the nodePort is 31517 and the targetPort is 9090, use the following command:
-
-sh
-
-kubectl port-forward svc/prometheus-server-ext-new 8081:80 --address 0.0.0.0 &
-Access Prometheus at http://localhost:8081.
-
+        Go to Home --> Add Datasource --> Prometheus
+         In Datasources, use the connection string for our Prometheus-server:
+              kubectl get svc prometheus-server
+#### Example Connection URL:
+        http://<prometheus-server-cluster-IP>:<Port>
+### Create Dashboard to visualize the charts:
+        Go to dashboards and import dashboard ID 3662.
