@@ -95,3 +95,11 @@ This repository contains Helm charts for deploying the Wanderlast sample backend
         http://<prometheus-server-cluster-IP>:<Port>
 ### Create Dashboard to visualize the charts:
         Go to dashboards and import dashboard ID 3662.
+        
+## Bringing Down All Services After the Lab
+### Bring down application pods:
+      helm uninstall wanderlast
+### Scale down all Grafana pods and services:
+      helm uninstall grafana
+### Scale down all Prometheus pods and services:
+      helm uninstall prometheus
