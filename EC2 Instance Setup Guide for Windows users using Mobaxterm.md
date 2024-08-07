@@ -57,13 +57,13 @@ This guide will walk you through the steps to launch an EC2 instance and connect
 - **Security Group Configuration:** Ensure your security group allows inbound SSH traffic on port 22 from your IP address.
 - **Correct Username:** For Ubuntu instances, the default username is `ubuntu`.
 - The default username can vary depending on the AMI you are using. Here are some common default usernames for different AMIs:
-      Amazon Linux 2 or Amazon Linux AMI: ec2-user
-      RHEL (Red Hat Enterprise Linux): ec2-user or root
-      CentOS: centos or root
-      Debian: admin or root
-      SUSE Linux: ec2-user or root
-      Ubuntu: ubuntu
-      Fedora: ec2-user or fedora
+  1.Amazon Linux 2 or Amazon Linux AMI: ec2-user
+  2.RHEL (Red Hat Enterprise Linux): ec2-user or root
+  3.CentOS: centos or root
+  4.Debian: admin or root
+  5. SUSE Linux: ec2-user or root
+  6. Ubuntu: ubuntu
+  7. Fedora: ec2-user or fedora
 When connecting via SSH, if you are unsure of the default username, check the documentation for the specific AMI you are using or try a combination of common usernames based on the operating system.
 
 Following these steps, you should be able to launch and connect to your EC2 instance using MobaXterm. 
