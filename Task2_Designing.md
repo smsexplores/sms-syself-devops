@@ -9,8 +9,9 @@ This document outlines a structured strategy needed to achieve a secure and resi
 - **Base Operating System:** Ubuntu 24.04
 - **Kubernetes Version:** v1.30.3
 
+## Project Diagram
 
-[Project Diagram](images/kubernetes architechure.png)
+![Project Diagram](images/kubernetes_architecture.png)
 
 ## 1. Infrastructure Layer
 
