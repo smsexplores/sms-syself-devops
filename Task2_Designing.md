@@ -10,7 +10,7 @@ This document outlines a structured strategy needed to achieve a secure and resi
 - **Kubernetes Version:** v1.30.3
 
 
-![Project Diagram](images/kubernetes architechure.png)
+[Project Diagram](images/kubernetes architechure.png)
 
 ## 1. Infrastructure Layer
 
